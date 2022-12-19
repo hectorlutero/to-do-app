@@ -230,37 +230,52 @@ Reducers todo.js
 
 ```javascript
 
-export const ADD_TODO = 'ADD_TODO';
-export const DELETE_TODO = 'DELETE_TODO';
-export const TOGGLE_TODO = 'TOGGLE_TODO';
-export const SET_FILTER = 'SET_FILTER';
+import { combineReducers } from 'redux';
+import { ADD_TODO, DELETE_TODO, TOGGLE_TODO, SET_FILTER } from '../actions/todos';
 
-export const addTodo = (text) => ({
-  type: ADD_TODO,
-  payload: {
-    text,
-  },
-});
+const initialState = {
+  items: [],
+  filter: 'all',
+};
 
-export const deleteTodo = (id) => ({
-  type: DELETE_TODO,
-  payload: {
-    id,
-  },
-});
+const todos = (state = initialState, action) => {
+  switch (action.type) {
+    case ADD_TODO:
+      return {
+        ...state,
+        items: [
+          ...state.items,
+          {
+            id: state.items.length + 1,
+            text: action.payload.text,
+            completed: false,
+          },
+        ],
+      };
+    case DELETE_TODO:
+      return {
+        ...state,
+        items: state.items.filter((item) => item.id !== action.payload.id),
+      };
+    case TOGGLE_TODO:
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.id === action.payload.id ? { ...item, completed: !item.completed } : item
+        ),
+      };
+    case SET_FILTER:
+      return {
+        ...state,
+        filter: action.payload.filter,
+      };
+    default:
+      return state;
+  }
+};
 
-export const toggleTodo = (id) => ({
-  type: TOGGLE_TODO,
-  payload: {
-    id,
-  },
-});
-
-export const setFilter = (filter) => ({
-  type: SET_FILTER,
-  payload: {
-    filter,
-  },
+export default combineReducers({
+  todos,
 });
 
 

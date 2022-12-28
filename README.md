@@ -1,282 +1,70 @@
-# to-do-app
+# Getting Started with Create React App
 
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-# File Structure
+## Available Scripts
 
-```
-todo-app/
-  public/
-    index.html
-  src/
-    components/
-      TodoList.js
-      TodoItem.js
-      AddTodoForm.js
-      EditTodoForm.js
-      TodoFilter.js
-    actions/
-      todos.js
-    reducers/
-      todos.js
-    services/
-      api.js
-    App.js
-    index.js
-  package.json
-  README.md
+In the project directory, you can run:
 
-```
+### `npm start`
 
-index.js
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-```javascript
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-import React from 'react';
-import { render } from 'react-dom';
-import App from './App';
-import './index.css';
+### `npm test`
 
-render(<App />, document.getElementById('root'));
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-```
+### `npm run build`
 
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-```javascript
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-import React from 'react';
-import TodoList from './components/TodoList';
-import AddTodoForm from './components/AddTodoForm';
-import TodoFilter from './components/TodoFilter';
+### `npm run eject`
 
-const App = () => {
-  return (
-    <div className="todo-app">
-      <h1>Todo List</h1>
-      <AddTodoForm />
-      <TodoFilter />
-      <TodoList />
-    </div>
-  );
-};
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-export default App;
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-```
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-API.js
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-```javascript
-import axios from 'axios';
+## Learn More
 
-export const getTodos = () => {
-  return axios.get('/api/todos');
-};
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-```
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-AddTodoForm
+### Code Splitting
 
-```javascript
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-import React, { useState } from 'react';
+### Analyzing the Bundle Size
 
-const AddTodoForm = () => {
-  const [todoText, setTodoText] = useState('');
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-  const handleChange = (event) => {
-    setTodoText(event.target.value);
-  };
+### Making a Progressive Web App
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Dispatch an action to add the todo
-    setTodoText('');
-  };
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={todoText}
-        onChange={handleChange}
-        placeholder="Enter a new todo"
-      />
-      <button type="submit">Add Todo</button>
-    </form>
-  );
-};
-
-export default AddTodoForm;
-
-
-```
-
-
-TodoFilter
-
-```javascript
-
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFilter } from '../actions/todos';
-
-const TodoFilter = () => {
-  const dispatch = useDispatch();
-  const filter = useSelector((state) => state.todos.filter);
-
-  const handleChange = (event) => {
-    dispatch(setFilter(event.target.value));
-  };
-
-  return (
-    <div className="todo-filter">
-      <label>
-        Filter:
-        <select value={filter} onChange={handleChange}>
-          <option value="all">All</option>
-          <option value="completed">Completed</option>
-          <option value="incomplete">Incomplete</option>
-        </select>
-      </label>
-    </div>
-  );
-};
-
-export default TodoFilter;
-
-```
-
-TodoList
-
-```javascript
-
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import TodoItem from './TodoItem';
-import { deleteTodo, toggleTodo } from '../actions/todos';
-
-const TodoList = () => {
-  const dispatch = useDispatch();
-  const todos = useSelector((state) => state.todos.items);
-
-  const handleDelete = (id) => {
-    dispatch(deleteTodo(id));
-  };
-
-  const handleToggle = (id) => {
-    dispatch(toggleTodo(id));
-  };
-
-  return (
-    <div className="todo-list">
-      {todos.map((todo) => (
-        <TodoItem
-          key={todo.id}
-          todo={todo}
-          onDelete={handleDelete}
-          onToggle={handleToggle}
-        />
-      ))}
-    </div>
-  );
-};
-
-export default TodoList;
-
-```
-
-Action todo.js
-
-```javascript
-
-export const ADD_TODO = 'ADD_TODO';
-export const DELETE_TODO = 'DELETE_TODO';
-export const TOGGLE_TODO = 'TOGGLE_TODO';
-export const SET_FILTER = 'SET_FILTER';
-
-export const addTodo = (text) => ({
-  type: ADD_TODO,
-  payload: {
-    text,
-  },
-});
-
-export const deleteTodo = (id) => ({
-  type: DELETE_TODO,
-  payload: {
-    id,
-  },
-});
-
-export const toggleTodo = (id) => ({
-  type: TOGGLE_TODO,
-  payload: {
-    id,
-  },
-});
-
-export const setFilter = (filter) => ({
-  type: SET_FILTER,
-  payload: {
-    filter,
-  },
-});
-
-
-```
-
-Reducers todo.js
-
-```javascript
-
-import { combineReducers } from 'redux';
-import { ADD_TODO, DELETE_TODO, TOGGLE_TODO, SET_FILTER } from '../actions/todos';
-
-const initialState = {
-  items: [],
-  filter: 'all',
-};
-
-const todos = (state = initialState, action) => {
-  switch (action.type) {
-    case ADD_TODO:
-      return {
-        ...state,
-        items: [
-          ...state.items,
-          {
-            id: state.items.length + 1,
-            text: action.payload.text,
-            completed: false,
-          },
-        ],
-      };
-    case DELETE_TODO:
-      return {
-        ...state,
-        items: state.items.filter((item) => item.id !== action.payload.id),
-      };
-    case TOGGLE_TODO:
-      return {
-        ...state,
-        items: state.items.map((item) =>
-          item.id === action.payload.id ? { ...item, completed: !item.completed } : item
-        ),
-      };
-    case SET_FILTER:
-      return {
-        ...state,
-        filter: action.payload.filter,
-      };
-    default:
-      return state;
-  }
-};
-
-export default combineReducers({
-  todos,
-});
-
-
-```
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
